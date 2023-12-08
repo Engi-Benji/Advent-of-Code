@@ -1,7 +1,7 @@
 f = open("./inputs/day8.txt", "r")
 
 movement = ""
-nodes = []
+nodes = {}
 
 count = 0
 for line in f.readlines():
@@ -22,14 +22,11 @@ for line in f.readlines():
         node.append(destspplit[0])
         node.append(destspplit[1])
 
-        nodes.append(node)
+        nodes[node[0]] = [node[1], node[2]]
     count += 1
 
-currentLocations = []
-
-for node in nodes:
-    if node[0][-1] == "A":
-        currentLocations.append(node[0])
+currentLocations = [key for key, value in nodes.items() if 'A' in key[-1]]
+print(currentLocations)
 
 count = 0
 atDestination = False
@@ -38,34 +35,30 @@ while not atDestination:
     for direction in movement:
         destinations = []
         for currentLocation in currentLocations:
-            moved = False
-            for node in nodes:
-                if node[0] == currentLocation and not moved:
-                    if direction == "L":
-                        destinations.append(node[1])
-                    else:
-                        destinations.append(node[2])
-                    moved = True
-                    break
+
+            if direction == "L":
+                destinations.append(nodes.get(currentLocation)[0])
+            else:
+                destinations.append(nodes.get(currentLocation)[1])
 
         currentLocations = destinations
         count += 1
-        allArrived = True
 
+        allArrived = True
         for currentLocation in currentLocations:
             # print(currentLocation[-1])
             if not currentLocation[-1] == "Z":
                 allArrived = False
                 break
 
-        #print(currentLocations)
-        #print(count)
+        # print(currentLocations)
+        # print(count)
 
         if allArrived:
             atDestination = True
             break
 
-        if count % 100000 == 0:
+        if count % 1000000000 == 0:
             print(count)
 
 print(currentLocations)
